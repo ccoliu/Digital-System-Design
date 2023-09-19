@@ -63,87 +63,108 @@ int main(int argc, char* argv[])
         ifstream fin(argv[1]);
         ofstream fout(argv[2]);
 
+        bool endoffile = false;
         string str = "";
         int var = 0;
         int out_var = 0;
-        fin >> str >> var;
 
         vector<char> varlab;
         string func_label = "";
-
-        fin >> str >> out_var;
-        fin >> str;
-
-        for (int i=0;i<var;i++)
-        {
-            char temp;
-            fin >> temp;
-            varlab.push_back(temp);
-        }
-
-        fin >> str >> func_label;
-
         int statement_var = 0;
-        fin >> str >> statement_var;
         vector<string> statement;
 
-        if (str != ".p")
+        fin >> str;
+        while (str != ".e")
         {
-            statement_var = 0;
-            while (str != ".e")
+            if (str == ".i")
             {
-                statement_var++;
-                string temp = "";
-                string temp_str = str;
-                string temp_char = "";
-                for (int j=0;j<var;j++)
-                {
-                    if (temp_str[j] != '-')
-                    {
-                        if (temp_str[j] == '0')
-                        {
-                            temp += varlab[j];
-                            temp += "!";
-                        }
-                        else
-                        {
-                            temp += varlab[j];
-                        }
-                        
-                    }   
-                }
-                statement.push_back(temp);
-                fin >> str >> temp_char;
+                fin >> var;
+                fin >> str;
             }
-        }
-        else
-        {
-            for (int i=0;i<statement_var;i++)
+            else if (str == ".o") 
             {
-                string temp = "";
-                string temp_str = "";
-                string temp_char = "";
-                fin >> temp_str >> temp_char;
-                for (int j=0;j<var;j++)
-                {
-                    if (temp_str[j] != '-')
-                    {
-                        if (temp_str[j] == '0')
-                        {
-                            temp += varlab[j];
-                            temp += "!";
-                        }
-                        else
-                        {
-                            temp += varlab[j];
-                        }
-                        
-                    }   
-                }
-                statement.push_back(temp);
+                fin >> out_var;
+                fin >> str;
             }
-            
-            fin >> str;
+            else if (str == ".ob")
+            {
+                fin >> func_label;
+                fin >> str;
+            }
+            else if (str == ".ilb")
+            {
+                for (int i=0;i<var;i++)
+                {
+                    char temp;
+                    fin >> temp;
+                    varlab.push_back(temp);
+                }
+                fin >> str;
+            }
+            else
+            {
+                if (str != ".p")
+                {
+                    
+                    string temp_char = "";
+                    fin >> temp_char;
+                    statement_var = 0;
+                    while (str != ".e")
+                    {
+                        statement_var++;
+                        string temp = "";
+                        string temp_str = str;
+                        for (int j=0;j<var;j++)
+                        {
+                            if (temp_str[j] != '-')
+                            {
+                                if (temp_str[j] == '0')
+                                {
+                                    temp += varlab[j];
+                                    temp += "!";
+                                }
+                                else
+                                {
+                                    temp += varlab[j];
+                                }
+                                
+                            }   
+                        }
+                        statement.push_back(temp);
+                        fin >> str >> temp_char;
+                    }
+                }
+                else
+                {
+                    fin >> statement_var;
+                    for (int i=0;i<statement_var;i++)
+                    {
+                        string temp = "";
+                        string temp_str = "";
+                        string temp_char = "";
+                        fin >> temp_str >> temp_char;
+                        for (int j=0;j<var;j++)
+                        {
+                            if (temp_str[j] != '-')
+                            {
+                                if (temp_str[j] == '0')
+                                {
+                                    temp += varlab[j];
+                                    temp += "!";
+                                }
+                                else
+                                {
+                                    temp += varlab[j];
+                                }
+                                
+                            }   
+                        }
+                        statement.push_back(temp);
+                    }
+                    
+                    fin >> str;
+                }
+            }
         }
 
         vector<pair<pair<int,char>,pair<int,int>>> binary_tree;
