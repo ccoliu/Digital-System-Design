@@ -115,7 +115,11 @@ int main(int argc, char* argv[])
             {
                 if (str != ".p")
                 {
-                    
+                    if (str[0] != '0' && str[0] != '1' && str[0] != '-')
+                    {
+                        cout << "Unexpected Error: Invalid input. " << "\"" << str << "\"" << endl;
+                        exit(0);
+                    }
                     string temp_char = "";
                     fin >> temp_char;
                     statement_var = 0;
@@ -144,8 +148,8 @@ int main(int argc, char* argv[])
                                 dontcare_str.push_back(temp_expr[i]);
                             }
                         }
+                        fin >> str >> temp_char;
                     }
-                    fin >> str;
                 }
                 else
                 {
