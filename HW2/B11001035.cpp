@@ -6,6 +6,24 @@
 #include <fstream>
 using namespace std;
 
+int var = 0;
+
+vector<vector<string>> make_group(vector<string> vec)
+{
+    vector<vector<string>> group(var+1);
+    vector<string> temp;
+    for (int i=0;i<vec.size();i++)
+    {
+        int flag = 0;
+        for (int j=0;j<vec[i].length();j++)
+        {
+            if (vec[i][j] == '1') flag++;
+        }
+        group[flag].push_back(vec[i]);
+    }
+    return group;
+}
+
 template<class T>
 void findrepeat(vector<T> &vec)
 {
@@ -69,7 +87,6 @@ int main(int argc, char* argv[])
         ofstream fout(argv[2]);
 
         string str = "";
-        int var = 0;
         int out_var = 0;
 
         vector<string> varlab;
@@ -214,6 +231,69 @@ int main(int argc, char* argv[])
             cout << dontcare_str[i] << " ";
         }
         cout << endl;
+        vector<vector<string>> group;
+        vector<string> cat;
+        cat.insert(cat.end(), minterms_str.begin(), minterms_str.end());
+        cat.insert(cat.end(), dontcare_str.begin(), dontcare_str.end());
+        group = make_group(cat);
+        for (int i=0;i<group.size();i++)
+        {
+            cout << "group " << i << ": ";
+            for (int j=0;j<group[i].size();j++)
+            {
+                cout << group[i][j] << " ";
+            }
+            cout << endl;
+        }
+        vector<vector<string>> prime_implicant(var+1);
+        int literal = var - 1;
+        for (int i=0;i<group.size();i++)
+        {
+            for (int j=0;j<group[i].size();j++)
+            {
+                prime_implicant[literal+1].push_back(group[i][j]);
+            }
+        }
+        while (literal >= var - 2)
+        {
+            for (int i=0;i<var;i++)
+            {
+                for (int j=0;j<group[i].size();j++)
+                {
+                    for (int k=0;k<group[i+1].size();k++)
+                    {
+                        int flag = 0;
+                        int loc = 0;
+                        for (int l=0;l<group[i][j].length();l++)
+                        {
+                            if (group[i][j][l] != group[i+1][k][l])
+                            {
+                                flag++;
+                                loc = l;
+                            }
+                        }
+                        if (flag == 1)
+                        {
+                            string temp = group[i][j];
+                            temp[loc] = '-';
+                            prime_implicant[literal].push_back(temp);
+                        }
+                    }
+                }
+            }
+            group = make_group(prime_implicant[literal]);
+            literal--;
+        }
+        findrepeat(prime_implicant[var-2]);
+        for (int i=var;i>=var-2;i--)
+        {
+            cout << "prime_implicant " << i << ": ";
+            for (int j=0;j<prime_implicant[i].size();j++)
+            {
+                cout << prime_implicant[i][j] << " ";
+            }
+            cout << endl;
+        }
     }
     else
     {
