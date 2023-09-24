@@ -254,8 +254,9 @@ int main(int argc, char* argv[])
                 prime_implicant[literal+1].push_back(group[i][j]);
             }
         }
-        while (literal >= var - 2)
+        while (literal >= 0)
         {
+            bool has_change = false;
             for (int i=0;i<var;i++)
             {
                 for (int j=0;j<group[i].size();j++)
@@ -274,6 +275,7 @@ int main(int argc, char* argv[])
                         }
                         if (flag == 1)
                         {
+                            has_change = true;
                             string temp = group[i][j];
                             temp[loc] = '-';
                             prime_implicant[literal].push_back(temp);
@@ -281,12 +283,14 @@ int main(int argc, char* argv[])
                     }
                 }
             }
+            if (!has_change) break;
             group = make_group(prime_implicant[literal]);
             literal--;
         }
-        findrepeat(prime_implicant[var-2]);
-        for (int i=var;i>=var-2;i--)
+        findrepeat(prime_implicant[literal+1]);
+        for (int i=var;i>=0;i--)
         {
+            if (prime_implicant[i].empty()) break;
             cout << "prime_implicant " << i << ": ";
             for (int j=0;j<prime_implicant[i].size();j++)
             {
