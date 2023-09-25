@@ -246,12 +246,14 @@ int main(int argc, char* argv[])
             cout << endl;
         }
         vector<vector<string>> prime_implicant(var+1);
+        vector<vector<bool>> prime_implicant_bool(var+1);
         int literal = var - 1;
         for (int i=0;i<group.size();i++)
         {
             for (int j=0;j<group[i].size();j++)
             {
                 prime_implicant[literal+1].push_back(group[i][j]);
+                prime_implicant_bool[literal+1].push_back(false);
             }
         }
         while (literal >= 0)
@@ -279,6 +281,17 @@ int main(int argc, char* argv[])
                             string temp = group[i][j];
                             temp[loc] = '-';
                             prime_implicant[literal].push_back(temp);
+                            prime_implicant_bool[literal].push_back(false);
+                            vector<string>::iterator it = find(prime_implicant[literal+1].begin(), prime_implicant[literal+1].end(), group[i][j]);
+                            if (it != prime_implicant[literal+1].end())
+                            {
+                                prime_implicant_bool[literal+1][it-prime_implicant[literal+1].begin()] = true;
+                            }
+                            it = find(prime_implicant[literal+1].begin(), prime_implicant[literal+1].end(), group[i+1][k]);
+                            if (it != prime_implicant[literal+1].end())
+                            {
+                                prime_implicant_bool[literal+1][it-prime_implicant[literal+1].begin()] = true;
+                            }                        
                         }
                     }
                 }
@@ -294,10 +307,12 @@ int main(int argc, char* argv[])
             cout << "prime_implicant " << i << ": ";
             for (int j=0;j<prime_implicant[i].size();j++)
             {
-                cout << prime_implicant[i][j] << " ";
+                cout << prime_implicant[i][j] << "(" << prime_implicant_bool[i][j] << ") ";
             }
             cout << endl;
         }
+        //find essential prime implicant
+        
     }
     else
     {
