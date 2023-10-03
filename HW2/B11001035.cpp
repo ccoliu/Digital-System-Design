@@ -12,6 +12,7 @@ string func_label = "";
 
 void output_file(ofstream &fout, vector<string> vec)
 {
+    int lit = 0;
     fout << ".i " << var << endl;
     fout << ".o 1" << endl;
     fout << ".ilb ";
@@ -24,9 +25,15 @@ void output_file(ofstream &fout, vector<string> vec)
     fout << ".p " << vec.size() << endl;
     for (int i=0;i<vec.size();i++)
     {
+        for (int j=0;j<vec[i].size();j++)
+        {
+            if (vec[i][j] == '1' || vec[i][j] == '0') lit++;
+        }
         fout << vec[i] << " 1" << endl;
     }
     fout << ".e" << endl;
+    cout << "Total number of terms: " << vec.size() << endl;
+    cout << "Total number of literals: " << lit << endl;
     exit(0);
     return;
 }
@@ -254,44 +261,44 @@ int main(int argc, char* argv[])
         findrepeat(dontcare);
         findrepeat(minterms_str);
         findrepeat(dontcare_str);
-        cout << "minterms: ";
-        for (int i=0;i<minterms.size();i++)
-        {
-            cout << minterms[i] << " ";
-        }
-        cout << endl;
-        cout << "dontcare: ";
-        for (int i=0;i<dontcare.size();i++)
-        {
-            cout << dontcare[i] << " ";
-        }
-        cout << endl;
-        cout << "minterms: ";
-        for (int i=0;i<minterms_str.size();i++)
-        {
-            cout << minterms_str[i] << " ";
-        }
-        cout << endl;
-        cout << "dontcare: ";
-        for (int i=0;i<dontcare_str.size();i++)
-        {
-            cout << dontcare_str[i] << " ";
-        }
-        cout << endl;
+        // cout << "minterms: ";
+        // for (int i=0;i<minterms.size();i++)
+        // {
+        //     cout << minterms[i] << " ";
+        // }
+        // cout << endl;
+        // cout << "dontcare: ";
+        // for (int i=0;i<dontcare.size();i++)
+        // {
+        //     cout << dontcare[i] << " ";
+        // }
+        // cout << endl;
+        // cout << "minterms: ";
+        // for (int i=0;i<minterms_str.size();i++)
+        // {
+        //     cout << minterms_str[i] << " ";
+        // }
+        // cout << endl;
+        // cout << "dontcare: ";
+        // for (int i=0;i<dontcare_str.size();i++)
+        // {
+        //     cout << dontcare_str[i] << " ";
+        // }
+        // cout << endl;
         vector<vector<string>> group;
         vector<string> cat;
         cat.insert(cat.end(), minterms_str.begin(), minterms_str.end());
         cat.insert(cat.end(), dontcare_str.begin(), dontcare_str.end());
         group = make_group(cat);
-        for (int i=0;i<group.size();i++)
-        {
-            cout << "group " << i << ": ";
-            for (int j=0;j<group[i].size();j++)
-            {
-                cout << group[i][j] << " ";
-            }
-            cout << endl;
-        }
+        // for (int i=0;i<group.size();i++)
+        // {
+        //     cout << "group " << i << ": ";
+        //     for (int j=0;j<group[i].size();j++)
+        //     {
+        //         cout << group[i][j] << " ";
+        //     }
+        //     cout << endl;
+        // }
         vector<vector<string>> prime_implicant(var+1);
         vector<vector<bool>> prime_implicant_bool(var+1);
         int literal = var - 1;
@@ -344,6 +351,7 @@ int main(int argc, char* argv[])
                 }
             }
             if (!has_change) break;
+            findrepeat(prime_implicant[literal]);
             group = make_group(prime_implicant[literal]);
             literal--;
         }
@@ -354,16 +362,16 @@ int main(int argc, char* argv[])
         for (int i=var;i>=0;i--)
         {
             if (prime_implicant[i].empty()) break;
-            cout << "prime_implicant " << i << ": ";
+            //cout << "prime_implicant " << i << ": ";
             for (int j=0;j<prime_implicant[i].size();j++)
             {
-                cout << prime_implicant[i][j] << "(" << prime_implicant_bool[i][j] << ") ";
+                //cout << prime_implicant[i][j] << "(" << prime_implicant_bool[i][j] << ") ";
                 if (prime_implicant_bool[i][j] == false)
                 {
                     essential_prime_implicant.push_back(prime_implicant[i][j]);
                 }
             }
-            cout << endl;
+            //cout << endl;
         }
         //find essential prime implicant
         
@@ -407,12 +415,12 @@ int main(int argc, char* argv[])
             }
         }
 
-        cout << "essential prime implicants: ";
-        for (int i=0;i<candidates.size();i++)
-        {
-            cout << candidates[i] << " ";
-        }
-        cout << endl;
+        // cout << "essential prime implicants: ";
+        // for (int i=0;i<candidates.size();i++)
+        // {
+        //     cout << candidates[i] << " ";
+        // }
+        // cout << endl;
 
         //if all candidates are found, output the result, else, do petrick's method
         if (minterms.empty()) output_file(fout, candidates);
@@ -437,7 +445,7 @@ int main(int argc, char* argv[])
             string temp = "";
             temp.push_back('A'+i);
             symbol.push_back(temp);
-            cout << symbol[i] << ": " << left_candidates[i] << endl;
+            //cout << symbol[i] << ": " << left_candidates[i] << endl;
         }
 
         for (int i=0;i<minterms.size();i++)
@@ -454,16 +462,16 @@ int main(int argc, char* argv[])
             }
         }
 
-        for (int i=0;i<petrick.size();i++)
-        {
-            if (petrick[i].empty()) continue;
-            for(int j=0;j<petrick[i].size();j++)
-            {
-                if (j != petrick[i].size()-1) cout << petrick[i][j] << "+";
-                else cout << petrick[i][j];
-            }
-            cout << endl;
-        }
+        // for (int i=0;i<petrick.size();i++)
+        // {
+        //     if (petrick[i].empty()) continue;
+        //     for(int j=0;j<petrick[i].size();j++)
+        //     {
+        //         if (j != petrick[i].size()-1) cout << petrick[i][j] << "+";
+        //         else cout << petrick[i][j];
+        //     }
+        //     cout << endl;
+        // }
 
         vector<vector<string>> petrick_copy;
         for (int i=0;i<petrick.size();i++)
@@ -482,11 +490,11 @@ int main(int argc, char* argv[])
         findrepeat(petrick_result);
 
         string result = "";
-        cout << "petrick result:" << endl;
+        //cout << "petrick result:" << endl;
         for (int i=0;i<petrick_result.size();i++)
         {
-            if (i != petrick_result.size()-1) cout << petrick_result[i] << "+";
-            else cout << petrick_result[i] << endl;
+            //if (i != petrick_result.size()-1) cout << petrick_result[i] << "+";
+            //else cout << petrick_result[i] << endl;
             if (result == "")
             {
                 result = petrick_result[i];
